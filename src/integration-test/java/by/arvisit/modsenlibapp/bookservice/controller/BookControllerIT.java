@@ -1,7 +1,12 @@
 package by.arvisit.modsenlibapp.bookservice.controller;
 
+import static by.arvisit.modsenlibapp.bookservice.util.BookITData.BOOK_SPRING_MICROSERVICES_ID;
+import static by.arvisit.modsenlibapp.bookservice.util.BookITData.BOOK_SPRING_MICROSERVICES_ISBN;
 import static by.arvisit.modsenlibapp.bookservice.util.BookITData.URL_BOOKS_ENDPOINT;
 import static by.arvisit.modsenlibapp.bookservice.util.BookITData.URL_BOOK_BY_ID_TEMPLATE;
+import static by.arvisit.modsenlibapp.bookservice.util.BookITData.getResponseForJavaPersistence;
+import static by.arvisit.modsenlibapp.bookservice.util.BookITData.getResponseForLinuxCommandLine;
+import static by.arvisit.modsenlibapp.bookservice.util.BookITData.getResponseForSpringMicroservices;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -12,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -26,6 +32,7 @@ import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
 import by.arvisit.modsenlibapp.bookservice.util.BookITData;
 
+@Profile("itest")
 @ExtendWith(PostgreSQLTestContainerExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SqlGroup({
@@ -62,9 +69,9 @@ class BookControllerIT {
                 });
 
         List<BookResponseDto> expected = List.of(
-                BookITData.getBookFromDBSpringMicroservices().build(),
-                BookITData.getBookFromDBJavaPersistence().build(),
-                BookITData.getBookFromDBLinuxCommandLine().build());
+                getResponseForSpringMicroservices().build(),
+                getResponseForJavaPersistence().build(),
+                getResponseForLinuxCommandLine().build());
 
         List<BookResponseDto> result = responseEntity.getBody();
         assertThat(result)
@@ -76,14 +83,12 @@ class BookControllerIT {
     void shouldReturn200AndJsonContentType_when_invokeGetBookById() {
         HttpEntity<?> requestEntity = HttpEntity.EMPTY;
 
-        String requestBookId = BookITData.getBookFromDBSpringMicroservices().build().id();
-
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 URL_BOOK_BY_ID_TEMPLATE,
                 HttpMethod.GET,
                 requestEntity,
                 String.class,
-                requestBookId);
+                BOOK_SPRING_MICROSERVICES_ID);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
@@ -93,15 +98,14 @@ class BookControllerIT {
     void shouldReturnExpectedResponse_when_invokeGetBookById() {
         HttpEntity<?> requestEntity = HttpEntity.EMPTY;
 
-        BookResponseDto expected = BookITData.getBookFromDBSpringMicroservices().build();
-
-        String requestBookId = expected.id();
         ResponseEntity<BookResponseDto> responseEntity = restTemplate.exchange(
                 URL_BOOK_BY_ID_TEMPLATE,
                 HttpMethod.GET,
                 requestEntity,
                 BookResponseDto.class,
-                requestBookId);
+                BOOK_SPRING_MICROSERVICES_ID);
+        
+        BookResponseDto expected = getResponseForSpringMicroservices().build();
 
         assertThat(responseEntity.getBody()).isEqualTo(expected);
     }
@@ -110,14 +114,12 @@ class BookControllerIT {
     void shouldReturn200AndJsonContentType_when_invokeGetBookByIsbn() {
         HttpEntity<?> requestEntity = HttpEntity.EMPTY;
 
-        String requestBookIsbn = BookITData.getBookFromDBSpringMicroservices().build().isbn();
-
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 BookITData.URL_BOOK_BY_ISBN_TEMPLATE,
                 HttpMethod.GET,
                 requestEntity,
                 String.class,
-                requestBookIsbn);
+                BOOK_SPRING_MICROSERVICES_ISBN);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
@@ -127,22 +129,21 @@ class BookControllerIT {
     void shouldReturnExpectedResponse_when_invokeGetBookByIsbn() {
         HttpEntity<?> requestEntity = HttpEntity.EMPTY;
 
-        BookResponseDto expected = BookITData.getBookFromDBSpringMicroservices().build();
-
-        String requestBookIsbn = expected.isbn();
         ResponseEntity<BookResponseDto> responseEntity = restTemplate.exchange(
                 BookITData.URL_BOOK_BY_ISBN_TEMPLATE,
                 HttpMethod.GET,
                 requestEntity,
                 BookResponseDto.class,
-                requestBookIsbn);
+                BOOK_SPRING_MICROSERVICES_ISBN);
+
+        BookResponseDto expected = getResponseForSpringMicroservices().build();
 
         assertThat(responseEntity.getBody()).isEqualTo(expected);
     }
 
     @Test
     void shouldReturn201AndJsonContentType_when_invokeSave() {
-        BookRequestDto requestBody = BookITData.getBookToSaveHeadFirstJava().build();
+        BookRequestDto requestBody = BookITData.getRequestToSaveHeadFirstJava().build();
 
         HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody);
 
@@ -158,7 +159,7 @@ class BookControllerIT {
 
     @Test
     void shouldReturnExpectedResponse_when_invokeSave() {
-        BookRequestDto requestBody = BookITData.getBookToSaveHeadFirstJava().build();
+        BookRequestDto requestBody = BookITData.getRequestToSaveHeadFirstJava().build();
 
         HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody);
 
@@ -168,7 +169,7 @@ class BookControllerIT {
                 requestEntity,
                 BookResponseDto.class);
 
-        BookResponseDto expectedIgnoreId = BookITData.getNewBookFromDBHeadFirstJava().build();
+        BookResponseDto expectedIgnoreId = BookITData.getResponseForHeadFirstJava().build();
 
         BookResponseDto result = responseEntity.getBody();
         assertThat(result.id()).isNotNull();
@@ -181,9 +182,7 @@ class BookControllerIT {
 
     @Test
     void shouldReturn200AndJsonContentType_when_invokeUpdate() {
-        BookRequestDto requestBody = BookITData.getBookToUpdateSpringMicroservices().build();
-
-        String requestBookId = BookITData.getBookFromDBSpringMicroservices().build().id();
+        BookRequestDto requestBody = BookITData.getRequestToUpdateSpringMicroservices().build();
 
         HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody);
 
@@ -192,7 +191,7 @@ class BookControllerIT {
                 HttpMethod.PUT,
                 requestEntity,
                 String.class,
-                requestBookId);
+                BOOK_SPRING_MICROSERVICES_ID);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON);
@@ -200,17 +199,7 @@ class BookControllerIT {
 
     @Test
     void shouldReturnExpectedResponse_when_invokeUpdate() {
-        BookRequestDto requestBody = BookITData.getBookToUpdateSpringMicroservices().build();
-
-        BookResponseDto expected = BookITData.getBookFromDBSpringMicroservices()
-                .withIsbn(requestBody.isbn())
-                .withTitle(requestBody.title())
-                .withDescription(requestBody.description())
-                .withGenre(requestBody.genre())
-                .withAuthor(requestBody.author())
-                .build();
-
-        String requestBookId = expected.id();
+        BookRequestDto requestBody = BookITData.getRequestToUpdateSpringMicroservices().build();
 
         HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody);
 
@@ -219,7 +208,15 @@ class BookControllerIT {
                 HttpMethod.PUT,
                 requestEntity,
                 BookResponseDto.class,
-                requestBookId);
+                BOOK_SPRING_MICROSERVICES_ID);
+
+        BookResponseDto expected = getResponseForSpringMicroservices()
+                .withIsbn(requestBody.isbn())
+                .withTitle(requestBody.title())
+                .withDescription(requestBody.description())
+                .withGenre(requestBody.genre())
+                .withAuthor(requestBody.author())
+                .build();
 
         assertThat(responseEntity.getBody()).isEqualTo(expected);
     }
@@ -228,21 +225,19 @@ class BookControllerIT {
     void shouldReturn204_when_invokeDelete() {
         HttpEntity<?> requestEntity = HttpEntity.EMPTY;
 
-        String requestBookId = BookITData.getBookFromDBSpringMicroservices().build().id();
-
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 URL_BOOK_BY_ID_TEMPLATE,
                 HttpMethod.DELETE,
                 requestEntity,
                 String.class,
-                requestBookId);
+                BOOK_SPRING_MICROSERVICES_ID);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test
     void shouldReturnAllBooksMinusOne_when_invokeDeleteAndThenInvokeGetBooks() {
-        String requestBookId = BookITData.getBookFromDBSpringMicroservices().build().id();
+        String requestBookId = getResponseForSpringMicroservices().build().id();
         restTemplate.delete(URL_BOOK_BY_ID_TEMPLATE, requestBookId);
 
         HttpEntity<?> remainingBooksRequestEntity = HttpEntity.EMPTY;
@@ -254,8 +249,8 @@ class BookControllerIT {
                 });
 
         List<BookResponseDto> expected = List.of(
-                BookITData.getBookFromDBJavaPersistence().build(),
-                BookITData.getBookFromDBLinuxCommandLine().build());
+                getResponseForJavaPersistence().build(),
+                getResponseForLinuxCommandLine().build());
 
         List<BookResponseDto> result = remainingBooksResponseEntity.getBody();
         assertThat(result)
