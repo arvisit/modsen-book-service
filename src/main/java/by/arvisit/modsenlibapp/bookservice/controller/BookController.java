@@ -37,7 +37,7 @@ public class BookController {
         return response;
     }
 
-    @GetMapping("/isbn/{isbn}") // TODO make up a better url
+    @GetMapping("/by-isbn/{isbn}")
     public BookResponseDto getBookByIsbn(@PathVariable String isbn) {
         BookResponseDto response = bookService.getBookByIsbn(isbn);
         log.debug("Got book with ISBN {}: {}", isbn, response);

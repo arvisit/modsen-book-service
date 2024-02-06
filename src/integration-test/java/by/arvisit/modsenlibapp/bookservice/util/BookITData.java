@@ -8,7 +8,7 @@ public final class BookITData {
 
     public static final String URL_BOOKS_ENDPOINT = "/api/v1/books";
     public static final String URL_BOOK_BY_ID_TEMPLATE = "/api/v1/books/{id}";
-    public static final String URL_BOOK_BY_ISBN_TEMPLATE = "/api/v1/books/isbn/{isbn}";
+    public static final String URL_BOOK_BY_ISBN_TEMPLATE = "/api/v1/books/by-isbn/{isbn}";
 
     private BookITData() {
     }
