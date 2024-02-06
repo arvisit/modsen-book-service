@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="01-implement-service" author="arvisit">
+
+        <createTable tableName="books">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="isbn" type="varchar(17)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="genre_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="genres">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="books"
+                baseColumnNames="genre_id"
+                constraintName="fk_books_genre_id"
+                referencedTableName="genres"
+                referencedColumnNames="id"
+        />
+
+        <insert tableName="genres">
+            <column name="name" value="Computer Science"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Adventure"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Science Fiction"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Detective"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Romance"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Fantasy"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Horror"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Historical"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Drama"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Thriller"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Mystery"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Comedy"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Philosophy"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Psychology"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Popular Science"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Biography"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Sports"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Poetry"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Non-fiction"/>
+        </insert>
+
+        <insert tableName="genres">
+            <column name="name" value="Humor"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>
