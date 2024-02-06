@@ -1,0 +1,8 @@
+spring:
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    liquibase: info
+    '[by.arvisit.modsenlibapp.bookservice]': debug
