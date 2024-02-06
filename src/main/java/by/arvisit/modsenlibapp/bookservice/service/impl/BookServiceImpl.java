@@ -1,5 +1,6 @@
 package by.arvisit.modsenlibapp.bookservice.service.impl;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,17 +15,20 @@ import by.arvisit.modsenlibapp.bookservice.persistence.repository.BookRepository
 import by.arvisit.modsenlibapp.bookservice.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-    
+
     @Transactional(readOnly = true)
     @Override
     public List<BookResponseDto> getBooks() {
+        log.debug("Call for BookService.getBooks()");
         return bookRepository.findAll().stream()
                 .map(bookMapper::fromEntityToDto)
                 .toList();
@@ -33,26 +37,27 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     @Override
     public BookResponseDto getBookById(String id) {
-        // TODO Catch EntityNotFoundException in GlobalExceptionHandler
-        
+        log.debug("Call for BookService.getBookById() with id {}", id);
         return bookMapper.fromEntityToDto(
                 bookRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new EntityNotFoundException("message"))); // TODO replace message and maybe rewrite method to use logging
+                        .orElseThrow(
+                                () -> new EntityNotFoundException(MessageFormat.format("Found no Book with id {}", id))));
     }
 
     @Transactional(readOnly = true)
     @Override
     public BookResponseDto getBookByIsbn(String isbn) {
-        // TODO Catch EntityNotFoundException in GlobalExceptionHandler
-        
+        log.debug("Call for BookService.getBookByIsbn() with isbn {}", isbn);
         return bookMapper.fromEntityToDto(
                 bookRepository.findByIsbn(isbn)
-                .orElseThrow(() -> new EntityNotFoundException("message"))); // TODO replace message and maybe rewrite method to use logging
+                        .orElseThrow(
+                                () -> new EntityNotFoundException(MessageFormat.format("Found no Book with isbn {}", isbn))));
     }
 
     @Transactional
     @Override
     public BookResponseDto save(BookRequestDto dto) {
+        log.debug("Call for BookService.save() with dto {}", dto);
         Book savedEntity = bookRepository.save(
                 bookMapper.fromDtoToEntity(dto));
         return bookMapper.fromEntityToDto(savedEntity);
@@ -61,8 +66,10 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public BookResponseDto update(String id, BookRequestDto dto) {
-        Book existingBook = bookRepository.findById(UUID.fromString(id)).orElseThrow(() -> new EntityNotFoundException("message")); // TODO replace message
-        
+        log.debug("Call for BookService.update() with id {} and dto {}", id, dto);
+        Book existingBook = bookRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Found no Book with id {}", id)));
+
         bookMapper.updateEntityWithDto(dto, existingBook);
         return bookMapper.fromEntityToDto(
                 bookRepository.save(existingBook));
@@ -71,9 +78,8 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void delete(String id) {
-        // TODO Auto-generated method stub
+        log.debug("Call for BookService.delete with id {}", id);
         bookRepository.deleteById(UUID.fromString(id));
-
     }
 
 }
