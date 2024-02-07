@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
         return bookMapper.fromEntityToDto(
                 bookRepository.findById(UUID.fromString(id))
                         .orElseThrow(
-                                () -> new EntityNotFoundException(MessageFormat.format("Found no Book with id {}", id))));
+                                () -> new EntityNotFoundException(MessageFormat.format("Found no Book with id {0}", id))));
     }
 
     @Transactional(readOnly = true)
@@ -51,7 +51,7 @@ public class BookServiceImpl implements BookService {
         return bookMapper.fromEntityToDto(
                 bookRepository.findByIsbn(isbn)
                         .orElseThrow(
-                                () -> new EntityNotFoundException(MessageFormat.format("Found no Book with isbn {}", isbn))));
+                                () -> new EntityNotFoundException(MessageFormat.format("Found no Book with isbn {0}", isbn))));
     }
 
     @Transactional
@@ -68,7 +68,7 @@ public class BookServiceImpl implements BookService {
     public BookResponseDto update(String id, BookRequestDto dto) {
         log.debug("Call for BookService.update() with id {} and dto {}", id, dto);
         Book existingBook = bookRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Found no Book with id {}", id)));
+                .orElseThrow(() -> new EntityNotFoundException(MessageFormat.format("Found no Book with id {0}", id)));
 
         bookMapper.updateEntityWithDto(dto, existingBook);
         return bookMapper.fromEntityToDto(
