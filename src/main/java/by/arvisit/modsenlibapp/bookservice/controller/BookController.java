@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
 import by.arvisit.modsenlibapp.bookservice.service.BookService;
+import by.arvisit.modsenlibapp.bookservice.validation.Isbn;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class BookController {
     }
 
     @GetMapping("/by-isbn/{isbn}")
-    public BookResponseDto getBookByIsbn(@PathVariable String isbn) {
+    public BookResponseDto getBookByIsbn(@PathVariable @Isbn String isbn) {
         BookResponseDto response = bookService.getBookByIsbn(isbn);
         log.debug("Got book with ISBN {}: {}", isbn, response);
         return response;
