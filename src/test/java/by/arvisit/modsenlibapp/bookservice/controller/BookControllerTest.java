@@ -2,6 +2,7 @@ package by.arvisit.modsenlibapp.bookservice.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -159,6 +160,122 @@ class BookControllerTest {
             String expectedContent = GENRE_NOT_EXIST_MESSAGE;
 
             mockMvc.perform(post(BookTestData.URL_BOOKS_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString(expectedContent)));
+        }
+    }
+
+    @Nested
+    class UpdateBook {
+
+        @Test
+        void shouldReturn200_when_passValidInput() throws Exception {
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto().build();
+
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(true);
+
+            mockMvc.perform(put(BookTestData.URL_BOOK_BY_ID_TEMPLATE, BookTestData.DEFAULT_STRING_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void shouldMapsToBusinessModel_when_passValidInput() throws Exception {
+            String bookId = BookTestData.DEFAULT_STRING_ID;
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto().build();
+            BookResponseDto responseDto = BookTestData.getDefaultBookResponseDto().build();
+
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(true);
+            Mockito.when(bookService.update(bookId, requestDto)).thenReturn(responseDto);
+
+            MvcResult mvcResult = mockMvc.perform(put(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            Mockito.verify(bookService, Mockito.times(1)).update(bookId, requestDto);
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+            BookResponseDto result = objectMapper.readValue(actualResponseBody, BookResponseDto.class);
+
+            Assertions.assertThat(result).isEqualTo(responseDto);
+        }
+
+        @Test
+        void shouldReturnValidBook_when_passValidInput() throws Exception {
+            String bookId = BookTestData.DEFAULT_STRING_ID;
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto().build();
+            BookResponseDto responseDto = BookTestData.getDefaultBookResponseDto().build();
+
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(true);
+            Mockito.when(bookService.update(bookId, requestDto)).thenReturn(responseDto);
+
+            MvcResult mvcResult = mockMvc.perform(put(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+
+            Assertions.assertThat(actualResponseBody)
+                    .isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(responseDto));
+        }
+
+        @ParameterizedTest
+        @MethodSource("by.arvisit.modsenlibapp.bookservice.controller.BookControllerTest#invalidTenDigitIsbn")
+        void shouldReturn400_when_passInvalidTenDigitIsbn(String isbn) throws Exception {
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto()
+                    .withIsbn(isbn)
+                    .build();
+
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(true);
+
+            String expectedContent = INVALID_ISBN_MESSAGE;
+
+            mockMvc.perform(put(BookTestData.URL_BOOK_BY_ID_TEMPLATE, BookTestData.DEFAULT_STRING_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString(expectedContent)));
+        }
+
+        @ParameterizedTest
+        @MethodSource("by.arvisit.modsenlibapp.bookservice.controller.BookControllerTest#invalidThirteenDigitIsbn")
+        void shouldReturn400_when_passInvalidThirteenDigitIsbn(String isbn) throws Exception {
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto()
+                    .withIsbn(isbn)
+                    .build();
+
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(true);
+
+            String expectedContent = INVALID_ISBN_MESSAGE;
+
+            mockMvc.perform(put(BookTestData.URL_BOOK_BY_ID_TEMPLATE, BookTestData.DEFAULT_STRING_ID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString(expectedContent)));
+        }
+
+        @Test
+        void shouldReturn400_when_passInvalidGenre() throws Exception {
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto().build();
+
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(false);
+
+            String expectedContent = GENRE_NOT_EXIST_MESSAGE;
+
+            mockMvc.perform(put(BookTestData.URL_BOOK_BY_ID_TEMPLATE, BookTestData.DEFAULT_STRING_ID)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(requestDto)))
                     .andDo(print())
