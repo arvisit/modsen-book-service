@@ -16,6 +16,9 @@ public final class BookTestData {
     public static final String DEFAULT_ISBN = "978-1-617-29695-6";
     public static final String DEFAULT_STRING_ID = "f4b27fe4-0ea1-423d-add6-daa2ee63802f";
     public static final UUID DEFAULT_UUID_ID = UUID.fromString(DEFAULT_STRING_ID);
+    
+    public static final String URL_BOOKS_ENDPOINT = "/api/v1/books";
+    public static final String URL_BOOK_BY_ID_TEMPLATE = "/api/v1/books/{id}";
 
     private BookTestData() {
     }
