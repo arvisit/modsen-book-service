@@ -2,6 +2,7 @@ package by.arvisit.modsenlibapp.bookservice.controller;
 
 import java.util.List;
 
+import org.hibernate.validator.constraints.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,7 +32,7 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping("/{id}")
-    public BookResponseDto getBookById(@PathVariable String id) {
+    public BookResponseDto getBookById(@PathVariable @UUID String id) {
         BookResponseDto response = bookService.getBookById(id);
         log.debug("Got book with id {}: {}", id, response);
         return response;
@@ -59,14 +60,14 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public BookResponseDto update(@PathVariable String id, @RequestBody @Valid BookRequestDto bookToUpdate) {
+    public BookResponseDto update(@PathVariable @UUID String id, @RequestBody @Valid BookRequestDto bookToUpdate) {
         BookResponseDto response = bookService.update(id, bookToUpdate);
         log.debug("Book with id {} was updated and now is {}", id, response);
         return response;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable @UUID String id) {
         bookService.delete(id);
         log.debug("Book with id {} was deleted", id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
