@@ -1,0 +1,4 @@
+logging:
+  level:
+    liquibase: info
+    '[by.arvisit.modsenlibapp.bookservice]': debug
