@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active:
-    - itest
   jpa:
     hibernate:
       ddl-auto: none
@@ -14,3 +11,7 @@ spring:
 logging:
   level:
     root: info
+
+exception:
+  handling:
+    include: true
