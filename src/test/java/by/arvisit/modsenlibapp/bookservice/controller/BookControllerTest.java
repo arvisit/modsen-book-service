@@ -1,6 +1,7 @@
 package by.arvisit.modsenlibapp.bookservice.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -32,6 +33,7 @@ import by.arvisit.modsenlibapp.bookservice.service.BookService;
 import by.arvisit.modsenlibapp.bookservice.service.GenreService;
 import by.arvisit.modsenlibapp.bookservice.util.BookTestData;
 import by.arvisit.modsenlibapp.exceptionhandlingstarter.handler.GlobalExceptionHandlerAdvice;
+import jakarta.persistence.EntityNotFoundException;
 
 @WebMvcTest(controllers = BookController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -278,6 +280,61 @@ class BookControllerTest {
             mockMvc.perform(put(BookTestData.URL_BOOK_BY_ID_TEMPLATE, BookTestData.DEFAULT_STRING_ID)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString(expectedContent)));
+        }
+    }
+
+    @Nested
+    class DeleteBook {
+
+        @Test
+        void shouldReturn204_when_passValidInput() throws Exception {
+            String bookId = BookTestData.DEFAULT_STRING_ID;
+
+            Mockito.doNothing().when(bookService).delete(bookId);
+
+            mockMvc.perform(delete(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isNoContent());
+        }
+
+        @Test
+        void shouldMapsToBusinessModel_when_passValidInput() throws Exception {
+            String bookId = BookTestData.DEFAULT_STRING_ID;
+
+            Mockito.doNothing().when(bookService).delete(bookId);
+
+            mockMvc.perform(delete(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isNoContent());
+
+            Mockito.verify(bookService, Mockito.times(1)).delete(bookId);
+        }
+
+        @Test
+        void shouldReturn404_when_passNonExistingBookId() throws Exception {
+            String bookId = BookTestData.DEFAULT_STRING_ID;
+
+            Mockito.doThrow(new EntityNotFoundException()).when(bookService).delete(bookId);
+
+            mockMvc.perform(delete(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        void shouldReturn400_when_passNonValidId() throws Exception {
+            String bookId = BookTestData.INVALID_STRING_ID;
+
+            String expectedContent = INVALID_UUID_MESSAGE;
+
+            mockMvc.perform(delete(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().string(containsString(expectedContent)));
