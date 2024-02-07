@@ -68,7 +68,6 @@ class BookControllerTest {
                     .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
                     .andExpect(status().isOk());
-
         }
 
         @Test
@@ -108,6 +107,83 @@ class BookControllerTest {
 
             Assertions.assertThat(actualResponseBody)
                     .isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(responseDtos));
+        }
+    }
+
+    @Nested
+    class GetBookById {
+
+        @Test
+        void shouldReturn200_when_passValidId() throws Exception {
+            mockMvc.perform(get(BookTestData.URL_BOOK_BY_ID_TEMPLATE, BookTestData.DEFAULT_STRING_ID)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void shouldMapsToBusinessModel_when_passValidId() throws Exception {
+            String bookId = BookTestData.DEFAULT_STRING_ID;
+            BookResponseDto responseDto = BookTestData.getDefaultBookResponseDto().build();
+
+            Mockito.when(bookService.getBookById(bookId)).thenReturn(responseDto);
+
+            MvcResult mvcResult = mockMvc.perform(get(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            Mockito.verify(bookService, Mockito.times(1)).getBookById(bookId);
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+            BookResponseDto result = objectMapper.readValue(actualResponseBody, BookResponseDto.class);
+
+            Assertions.assertThat(result).isEqualTo(responseDto);
+        }
+
+        @Test
+        void shouldReturnValidBook_when_passValidId() throws Exception {
+            String bookId = BookTestData.DEFAULT_STRING_ID;
+            BookResponseDto responseDto = BookTestData.getDefaultBookResponseDto().build();
+
+            Mockito.when(bookService.getBookById(bookId)).thenReturn(responseDto);
+
+            MvcResult mvcResult = mockMvc.perform(get(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            Mockito.verify(bookService, Mockito.times(1)).getBookById(bookId);
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+
+            Assertions.assertThat(actualResponseBody)
+                    .isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(responseDto));
+        }
+
+        @Test
+        void shouldReturn404_when_passNonExistingBookId() throws Exception {
+            String bookId = BookTestData.DEFAULT_STRING_ID;
+
+            Mockito.when(bookService.getBookById(bookId)).thenThrow(EntityNotFoundException.class);
+
+            mockMvc.perform(get(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        void shouldReturn400_when_passNonValidId() throws Exception {
+            String bookId = BookTestData.INVALID_STRING_ID;
+
+            String expectedContent = INVALID_UUID_MESSAGE;
+
+            mockMvc.perform(get(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString(expectedContent)));
         }
     }
 
@@ -374,7 +450,7 @@ class BookControllerTest {
         void shouldReturn404_when_passNonExistingBookId() throws Exception {
             String bookId = BookTestData.DEFAULT_STRING_ID;
 
-            Mockito.doThrow(new EntityNotFoundException()).when(bookService).delete(bookId);
+            Mockito.doThrow(EntityNotFoundException.class).when(bookService).delete(bookId);
 
             mockMvc.perform(delete(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
                     .contentType(MediaType.APPLICATION_JSON))
