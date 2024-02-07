@@ -17,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
@@ -32,7 +32,7 @@ import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
 import by.arvisit.modsenlibapp.bookservice.util.BookITData;
 
-@Profile("itest")
+@ActiveProfiles("itest")
 @ExtendWith(PostgreSQLTestContainerExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SqlGroup({
