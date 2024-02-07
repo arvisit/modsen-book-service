@@ -2,12 +2,14 @@ package by.arvisit.modsenlibapp.bookservice.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.Assertions;
@@ -25,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
@@ -55,6 +58,58 @@ class BookControllerTest {
 
     @MockBean
     private GenreService genreService;
+
+    @Nested
+    class GetBooks {
+
+        @Test
+        void shouldReturn200_when_invokeGetBooks() throws Exception {
+            mockMvc.perform(get(BookTestData.URL_BOOKS_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk());
+
+        }
+
+        @Test
+        void shouldMapsToBusinessModel_when_invokeGetBooks() throws Exception {
+            List<BookResponseDto> responseDtos = List.of(BookTestData.getDefaultBookResponseDto().build());
+
+            Mockito.when(bookService.getBooks()).thenReturn(responseDtos);
+
+            MvcResult mvcResult = mockMvc.perform(get(BookTestData.URL_BOOKS_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            Mockito.verify(bookService, Mockito.times(1)).getBooks();
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+            List<BookResponseDto> result = objectMapper.readValue(actualResponseBody,
+                    new TypeReference<List<BookResponseDto>>() {
+                    });
+
+            Assertions.assertThat(result).isEqualTo(responseDtos);
+        }
+
+        @Test
+        void shouldReturnValidBooks_when_invokeGetBooks() throws Exception {
+            List<BookResponseDto> responseDtos = List.of(BookTestData.getDefaultBookResponseDto().build());
+
+            Mockito.when(bookService.getBooks()).thenReturn(responseDtos);
+
+            MvcResult mvcResult = mockMvc.perform(get(BookTestData.URL_BOOKS_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+
+            Assertions.assertThat(actualResponseBody)
+                    .isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(responseDtos));
+        }
+    }
 
     @Nested
     class SaveBook {
