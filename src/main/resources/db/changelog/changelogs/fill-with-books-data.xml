@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="01-implement-service" author="arvisit" >
+
+        <insert tableName="books">
+            <column name="id" value="db7bb26a-b292-44e1-a814-4dc41f0c899a"/>
+            <column name="isbn" value="978-0-306-40615-7"/>
+            <column name="title" value="The Shadow of the Wind"/>
+            <column name="genre_id" value="1"/>
+            <column name="description" value="A captivating mystery set in post-war Barcelona, where a young boy discovers a forgotten book that leads him into a world of intrigue and danger."/>
+            <column name="author" value="Carlos Ruiz Zafón"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="66701adf-364d-44bd-8d46-46ef01d2af4d"/>
+            <column name="isbn" value="978-0-619-36540-3"/>
+            <column name="title" value="Brave New World"/>
+            <column name="genre_id" value="2"/>
+            <column name="description" value="A dystopian classic exploring a society where genetic engineering, psychological manipulation, and hedonism have eradicated individuality and freedom."/>
+            <column name="author" value="Aldous Huxley"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="117cb44f-420b-4f44-bb39-c77fbac706ee"/>
+            <column name="isbn" value="978-0-06-056098-9"/>
+            <column name="title" value="The Great Gatsby"/>
+            <column name="genre_id" value="3"/>
+            <column name="description" value="F. Scott Fitzgerald's masterpiece delves into the Jazz Age of 1920s America, examining themes of wealth, love, and the American Dream."/>
+            <column name="author" value="F. Scott Fitzgerald"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="05edec82-491a-49ab-8f6f-4b4c70240f8f"/>
+            <column name="isbn" value="978-0-452-28084-2"/>
+            <column name="title" value="To Kill a Mockingbird"/>
+            <column name="genre_id" value="4"/>
+            <column name="description" value="Harper Lee's timeless novel tells the story of racial injustice and moral growth in the American South, through the eyes of young Scout Finch."/>
+            <column name="author" value="Harper Lee"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="f87c688b-0173-4c4e-929a-dc9d56ba8b33"/>
+            <column name="isbn" value="978-0-8129-8203-4"/>
+            <column name="title" value="The Catcher in the Rye"/>
+            <column name="genre_id" value="5"/>
+            <column name="description" value="J.D. Salinger's iconic tale follows disillusioned teenager Holden Caulfield as he navigates the complexities of adolescence and society."/>
+            <column name="author" value="J.D. Salinger"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="0c8f84fd-17b8-4286-931d-230e1d4f0f7b"/>
+            <column name="isbn" value="978-0-201-63361-0"/>
+            <column name="title" value="1984"/>
+            <column name="genre_id" value="6"/>
+            <column name="description" value="George Orwell's chilling vision of a totalitarian future, where individuality is crushed and reality is manipulated by a tyrannical government."/>
+            <column name="author" value="George Orwell"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="b166f764-7851-499a-815c-748083967bdb"/>
+            <column name="isbn" value="978-0-06-009036-9"/>
+            <column name="title" value="Pride and Prejudice"/>
+            <column name="genre_id" value="7"/>
+            <column name="description" value="Jane Austen's beloved romance explores themes of class, marriage, and societal expectations, through the tumultuous relationship of Elizabeth Bennet and Mr. Darcy."/>
+            <column name="author" value="Jane Austen"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="e53212e6-8753-475d-ac1a-7ab79fdeea8b"/>
+            <column name="isbn" value="978-0-375-41243-6"/>
+            <column name="title" value="The Hobbit"/>
+            <column name="genre_id" value="8"/>
+            <column name="description" value="J.R.R. Tolkien's enchanting adventure follows Bilbo Baggins as he embarks on a quest to reclaim a stolen treasure guarded by the dragon Smaug."/>
+            <column name="author" value="J.R.R. Tolkien"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="9e8910ee-500c-441c-9eb8-6d8c3e5c58d7"/>
+            <column name="isbn" value="978-0-307-36463-1"/>
+            <column name="title" value="Fahrenheit 451"/>
+            <column name="genre_id" value="9"/>
+            <column name="description" value="Ray Bradbury's cautionary tale depicts a future society where books are banned and 'firemen' burn any that are found, exploring themes of censorship and knowledge."/>
+            <column name="author" value="Ray Bradbury"/>
+        </insert>
+        <insert tableName="books">
+            <column name="id" value="4ffaf299-d6d9-42dc-ba0c-bca56ef68a8e"/>
+            <column name="isbn" value="978-0-306-46689-9"/>
+            <column name="title" value="Lord of the Flies"/>
+            <column name="genre_id" value="10"/>
+            <column name="description" value="William Golding's allegorical novel examines the descent into savagery of a group of boys stranded on a deserted island, highlighting the dark side of human nature."/>
+            <column name="author" value="William Golding"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>
