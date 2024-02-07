@@ -6,7 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
@@ -17,10 +19,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
+import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
 import by.arvisit.modsenlibapp.bookservice.service.BookService;
 import by.arvisit.modsenlibapp.bookservice.service.GenreService;
 import by.arvisit.modsenlibapp.bookservice.util.BookTestData;
@@ -32,6 +36,7 @@ import by.arvisit.modsenlibapp.exceptionhandlingstarter.handler.GlobalExceptionH
 class BookControllerTest {
 
     private static final String INVALID_ISBN_MESSAGE = "Book isbn should rather consist of 10 digits and 3 hyphens or 13 digits and 4 hyphens. Also the last character could be X. No hyphens concatenated. No hyphens at the beginnig and end.";
+    private static final String GENRE_NOT_EXIST_MESSAGE = "Known genre should be used.";
 
     @Autowired
     private MockMvc mockMvc;
@@ -47,6 +52,61 @@ class BookControllerTest {
 
     @Nested
     class SaveBook {
+
+        @Test
+        void shouldReturn201_when_passValidInput() throws Exception {
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto().build();
+
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(true);
+
+            mockMvc.perform(post(BookTestData.URL_BOOKS_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isCreated());
+        }
+        
+        @Test
+        void shouldMapsToBusinessModel_when_passValidInput() throws Exception {
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto().build();
+            BookResponseDto responseDto = BookTestData.getDefaultBookResponseDto().build();
+            
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(true);
+            Mockito.when(bookService.save(requestDto)).thenReturn(responseDto);
+            
+            MvcResult mvcResult = mockMvc.perform(post(BookTestData.URL_BOOKS_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andReturn();
+            
+            Mockito.verify(bookService, Mockito.times(1)).save(requestDto);
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+            BookResponseDto result = objectMapper.readValue(actualResponseBody, BookResponseDto.class);
+            
+            Assertions.assertThat(result).isEqualTo(responseDto);
+        }
+        
+        @Test
+        void shouldReturnValidBook_when_passValidInput() throws Exception {
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto().build();
+            BookResponseDto responseDto = BookTestData.getDefaultBookResponseDto().build();
+            
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(true);
+            Mockito.when(bookService.save(requestDto)).thenReturn(responseDto);
+            
+            MvcResult mvcResult = mockMvc.perform(post(BookTestData.URL_BOOKS_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isCreated())
+                    .andReturn();
+            
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+            
+            Assertions.assertThat(actualResponseBody).isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(responseDto));
+        }
 
         @ParameterizedTest
         @ValueSource(strings = { "-0123-456-789", "---0123456789", "0123-456-789-", "012-345--678-9", "01-23-4567X-9",
@@ -79,6 +139,22 @@ class BookControllerTest {
             Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(true);
 
             String expectedContent = INVALID_ISBN_MESSAGE;
+
+            mockMvc.perform(post(BookTestData.URL_BOOKS_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(requestDto)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString(expectedContent)));
+        }
+
+        @Test
+        void shouldReturn400_when_passInvalidGenre() throws Exception {
+            BookRequestDto requestDto = BookTestData.getDefaultBookRequestDto().build();
+
+            Mockito.when(genreService.isGenreExists(Mockito.any())).thenReturn(false);
+
+            String expectedContent = GENRE_NOT_EXIST_MESSAGE;
 
             mockMvc.perform(post(BookTestData.URL_BOOKS_ENDPOINT)
                     .contentType(MediaType.APPLICATION_JSON)
