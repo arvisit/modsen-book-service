@@ -49,7 +49,7 @@ public class BookController {
     @GetMapping
     public List<BookResponseDto> getBooks() {
         List<BookResponseDto> response = bookService.getBooks();
-        log.debug("Got all books: {}", response);
+        log.debug("Got all books. Total count: {}", response.size());
         return response;
     }
 
