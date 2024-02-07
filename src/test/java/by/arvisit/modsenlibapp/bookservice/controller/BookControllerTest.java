@@ -43,7 +43,7 @@ import jakarta.persistence.EntityNotFoundException;
 @Import(GlobalExceptionHandlerAdvice.class)
 class BookControllerTest {
 
-    private static final String INVALID_ISBN_MESSAGE = "Book isbn should rather consist of 10 digits and 3 hyphens or 13 digits and 4 hyphens. Also the last character could be X. No hyphens concatenated. No hyphens at the beginnig and end.";
+    private static final String INVALID_ISBN_MESSAGE = "Book ISBN should rather consist of 10 digits and 3 hyphens or 13 digits and 4 hyphens. Also the last character could be X. No hyphens concatenated. No hyphens at the beginning and end.";
     private static final String GENRE_NOT_EXIST_MESSAGE = "Known genre should be used.";
     private static final String INVALID_UUID_MESSAGE = "must be a valid UUID";
 
@@ -180,6 +180,94 @@ class BookControllerTest {
             String expectedContent = INVALID_UUID_MESSAGE;
 
             mockMvc.perform(get(BookTestData.URL_BOOK_BY_ID_TEMPLATE, bookId)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString(expectedContent)));
+        }
+    }
+
+    @Nested
+    class GetBookByIsbn {
+
+        @Test
+        void shouldReturn200_when_passValidIsbn() throws Exception {
+            mockMvc.perform(get(BookTestData.URL_BOOK_BY_ISBN_TEMPLATE, BookTestData.DEFAULT_ISBN)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        void shouldMapsToBusinessModel_when_passValidIsbn() throws Exception {
+            String bookIsbn = BookTestData.DEFAULT_ISBN;
+            BookResponseDto responseDto = BookTestData.getDefaultBookResponseDto().build();
+
+            Mockito.when(bookService.getBookByIsbn(bookIsbn)).thenReturn(responseDto);
+
+            MvcResult mvcResult = mockMvc.perform(get(BookTestData.URL_BOOK_BY_ISBN_TEMPLATE, bookIsbn)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            Mockito.verify(bookService, Mockito.times(1)).getBookByIsbn(bookIsbn);
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+            BookResponseDto result = objectMapper.readValue(actualResponseBody, BookResponseDto.class);
+
+            Assertions.assertThat(result).isEqualTo(responseDto);
+        }
+
+        @Test
+        void shouldReturnValidBook_when_passValidIsbn() throws Exception {
+            String bookIsbn = BookTestData.DEFAULT_ISBN;
+            BookResponseDto responseDto = BookTestData.getDefaultBookResponseDto().build();
+
+            Mockito.when(bookService.getBookByIsbn(bookIsbn)).thenReturn(responseDto);
+
+            MvcResult mvcResult = mockMvc.perform(get(BookTestData.URL_BOOK_BY_ISBN_TEMPLATE, bookIsbn)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+            Mockito.verify(bookService, Mockito.times(1)).getBookByIsbn(bookIsbn);
+            String actualResponseBody = mvcResult.getResponse().getContentAsString();
+
+            Assertions.assertThat(actualResponseBody)
+                    .isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(responseDto));
+        }
+
+        @Test
+        void shouldReturn404_when_passNonExistingBookIsbn() throws Exception {
+            String bookIsbn = BookTestData.DEFAULT_ISBN;
+
+            Mockito.when(bookService.getBookByIsbn(bookIsbn)).thenThrow(EntityNotFoundException.class);
+
+            mockMvc.perform(get(BookTestData.URL_BOOK_BY_ISBN_TEMPLATE, bookIsbn)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isNotFound());
+        }
+
+        @ParameterizedTest
+        @MethodSource("by.arvisit.modsenlibapp.bookservice.controller.BookControllerTest#invalidTenDigitIsbn")
+        void shouldReturn400_when_passNonValidTenDigitIsbn(String isbn) throws Exception {
+            String expectedContent = INVALID_ISBN_MESSAGE;
+
+            mockMvc.perform(get(BookTestData.URL_BOOK_BY_ISBN_TEMPLATE, isbn)
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string(containsString(expectedContent)));
+        }
+
+        @ParameterizedTest
+        @MethodSource("by.arvisit.modsenlibapp.bookservice.controller.BookControllerTest#invalidThirteenDigitIsbn")
+        void shouldReturn400_when_passNonValidThirteenDigitIsbn(String isbn) throws Exception {
+            String expectedContent = INVALID_ISBN_MESSAGE;
+
+            mockMvc.perform(get(BookTestData.URL_BOOK_BY_ISBN_TEMPLATE, isbn)
                     .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
