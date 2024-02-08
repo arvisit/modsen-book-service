@@ -3,4 +3,17 @@ spring:
     name: modsen-book-service
   cloud:
     config:
-      uri: ${CONFIG_SERVER_URL}
+      discovery:
+        enabled: true
+        service-id: modsen-config-server
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 600
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone:
+        http://${EUREKA_HOSTNAME}:${EUREKA_PORT}/eureka/
