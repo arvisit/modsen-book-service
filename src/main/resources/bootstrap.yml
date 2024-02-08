@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: modsen-book-service
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL}
