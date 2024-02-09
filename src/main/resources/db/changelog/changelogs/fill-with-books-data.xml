@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="01-implement-service" author="arvisit" >
+    <changeSet id="fill-with-books-data" author="arvisit" >
 
         <insert tableName="books">
             <column name="id" value="db7bb26a-b292-44e1-a814-4dc41f0c899a"/>
