@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import by.arvisit.modsenlibapp.bookservice.dto.UserDto;
 
-@Profile({ "docker", "!itest" })
+@Profile({ "docker"})
 @FeignClient(value = "modsen-security-service")
 public interface DiscoveryUserClient extends UserClient {
 
