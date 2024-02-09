@@ -10,6 +10,9 @@ public class PostgreSQLTestContainerExtension implements BeforeAllCallback, Afte
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         System.setProperty("spring.datasource.url", "jdbc:tc:postgresql:15-alpine:///");
+        System.setProperty("spring.security.cors.allowedOrigin", "none");
+        System.setProperty("spring.security.cors.allowedMethod", "none");
+        System.setProperty("spring.security.cors.allowedHeader", "none");
     }
 
     @Override

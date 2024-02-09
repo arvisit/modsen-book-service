@@ -19,6 +19,7 @@ import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
 import by.arvisit.modsenlibapp.bookservice.service.BookService;
 import by.arvisit.modsenlibapp.bookservice.validation.Isbn;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,7 @@ public class BookController {
     }
 
     @PostMapping
+    @RolesAllowed("ADMIN")
     public ResponseEntity<BookResponseDto> save(@RequestBody @Valid BookRequestDto request) {
         BookResponseDto response = bookService.save(request);
         log.debug("New book was added: {}", response);
@@ -61,6 +63,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public BookResponseDto update(@PathVariable @UUID String id, @RequestBody @Valid BookRequestDto bookToUpdate) {
         BookResponseDto response = bookService.update(id, bookToUpdate);
         log.debug("Book with id {} was updated and now is {}", id, response);
@@ -68,6 +71,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<Void> delete(@PathVariable @UUID String id) {
         bookService.delete(id);
         log.debug("Book with id {} was deleted", id);

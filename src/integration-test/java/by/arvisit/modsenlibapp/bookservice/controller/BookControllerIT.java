@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,9 +28,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+
 import by.arvisit.modsenlibapp.bookservice.PostgreSQLTestContainerExtension;
 import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
+import by.arvisit.modsenlibapp.bookservice.dto.UserDto;
 import by.arvisit.modsenlibapp.bookservice.util.BookITData;
 
 @ActiveProfiles("itest")
@@ -38,12 +45,17 @@ import by.arvisit.modsenlibapp.bookservice.util.BookITData;
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-books.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-books.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
+@WireMockTest(httpPort = 8480)
 class BookControllerIT {
 
+    private static final String USERS_VALIDATE_URL = "/api/v1/users/validate";
+    private static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
     private static final int EXPECTED_BOOK_COUNT_DEFAULT = 3;
     private static final int EXPECTED_BOOKS_COUNT_AFTER_DELETE = 2;
     @Autowired
     private TestRestTemplate restTemplate;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     void shouldReturn200AndJsonContentType_when_invokeGetBooks() {
@@ -104,7 +116,7 @@ class BookControllerIT {
                 requestEntity,
                 BookResponseDto.class,
                 BOOK_SPRING_MICROSERVICES_ID);
-        
+
         BookResponseDto expected = getResponseForSpringMicroservices().build();
 
         assertThat(responseEntity.getBody()).isEqualTo(expected);
@@ -142,10 +154,15 @@ class BookControllerIT {
     }
 
     @Test
-    void shouldReturn201AndJsonContentType_when_invokeSave() {
+    void shouldReturn201AndJsonContentType_when_invokeSave() throws Exception {
         BookRequestDto requestBody = BookITData.getRequestToSaveHeadFirstJava().build();
 
-        HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody);
+        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        wireMockResponse(user);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(JWT_TOKEN);
+        HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 URL_BOOKS_ENDPOINT,
@@ -158,10 +175,15 @@ class BookControllerIT {
     }
 
     @Test
-    void shouldReturnExpectedResponse_when_invokeSave() {
+    void shouldReturnExpectedResponse_when_invokeSave() throws Exception {
         BookRequestDto requestBody = BookITData.getRequestToSaveHeadFirstJava().build();
 
-        HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody);
+        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        wireMockResponse(user);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(JWT_TOKEN);
+        HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<BookResponseDto> responseEntity = restTemplate.exchange(
                 URL_BOOKS_ENDPOINT,
@@ -181,10 +203,15 @@ class BookControllerIT {
     }
 
     @Test
-    void shouldReturn200AndJsonContentType_when_invokeUpdate() {
+    void shouldReturn200AndJsonContentType_when_invokeUpdate() throws Exception {
         BookRequestDto requestBody = BookITData.getRequestToUpdateSpringMicroservices().build();
 
-        HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody);
+        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        wireMockResponse(user);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(JWT_TOKEN);
+        HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 URL_BOOK_BY_ID_TEMPLATE,
@@ -198,10 +225,15 @@ class BookControllerIT {
     }
 
     @Test
-    void shouldReturnExpectedResponse_when_invokeUpdate() {
+    void shouldReturnExpectedResponse_when_invokeUpdate() throws Exception {
         BookRequestDto requestBody = BookITData.getRequestToUpdateSpringMicroservices().build();
 
-        HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody);
+        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        wireMockResponse(user);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(JWT_TOKEN);
+        HttpEntity<BookRequestDto> requestEntity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<BookResponseDto> responseEntity = restTemplate.exchange(
                 URL_BOOK_BY_ID_TEMPLATE,
@@ -222,8 +254,13 @@ class BookControllerIT {
     }
 
     @Test
-    void shouldReturn204_when_invokeDelete() {
-        HttpEntity<?> requestEntity = HttpEntity.EMPTY;
+    void shouldReturn204_when_invokeDelete() throws Exception {
+        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        wireMockResponse(user);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(JWT_TOKEN);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 URL_BOOK_BY_ID_TEMPLATE,
@@ -236,9 +273,19 @@ class BookControllerIT {
     }
 
     @Test
-    void shouldReturnAllBooksMinusOne_when_invokeDeleteAndThenInvokeGetBooks() {
-        String requestBookId = getResponseForSpringMicroservices().build().id();
-        restTemplate.delete(URL_BOOK_BY_ID_TEMPLATE, requestBookId);
+    void shouldReturnAllBooksMinusOne_when_invokeDeleteAndThenInvokeGetBooks() throws Exception {
+        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        wireMockResponse(user);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(JWT_TOKEN);
+        HttpEntity<Void> deleteRequestEntity = new HttpEntity<>(headers);
+
+        restTemplate.exchange(URL_BOOK_BY_ID_TEMPLATE,
+                HttpMethod.DELETE,
+                deleteRequestEntity,
+                Void.class,
+                BOOK_SPRING_MICROSERVICES_ID);
 
         HttpEntity<?> remainingBooksRequestEntity = HttpEntity.EMPTY;
         ResponseEntity<List<BookResponseDto>> remainingBooksResponseEntity = restTemplate.exchange(
@@ -256,5 +303,13 @@ class BookControllerIT {
         assertThat(result)
                 .hasSize(EXPECTED_BOOKS_COUNT_AFTER_DELETE)
                 .isEqualTo(expected);
+    }
+
+    private void wireMockResponse(UserDto user) throws JsonProcessingException {
+        String body = objectMapper.writeValueAsString(user);
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(USERS_VALIDATE_URL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(body)));
     }
 }
