@@ -20,13 +20,25 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <exception-handling-starter.version>0.0.1-SNAPSHOT</exception-handling-starter.version>
+        <inner-filter-starter.version>0.0.1-SNAPSHOT</inner-filter-starter.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <wiremock.version>3.3.1</wiremock.version>
+        <jetty.version>11.0.18</jetty.version>
+        <jetty-bom.version>12.0.3</jetty-bom.version>
     </properties>
 
     <repositories>
         <repository>
             <id>modsen-exception-handling-starter</id>
             <url>https://raw.github.com/arvisit/modsen-exception-handling-starter/artifact</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>modsen-inner-filter-starter</id>
+            <url>https://raw.github.com/arvisit/modsen-inner-filter-starter/artifact</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -40,6 +52,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-bom</artifactId>
+                <version>${jetty-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -73,6 +92,11 @@
             <version>${exception-handling-starter.version}</version>
         </dependency>
         <dependency>
+            <groupId>by.arvisit.modsen-lib-app</groupId>
+            <artifactId>inner-filter-starter</artifactId>
+            <version>${inner-filter-starter.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
@@ -83,6 +107,18 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
 
         <dependency>
@@ -124,6 +160,11 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
         </dependency>
     </dependencies>
 

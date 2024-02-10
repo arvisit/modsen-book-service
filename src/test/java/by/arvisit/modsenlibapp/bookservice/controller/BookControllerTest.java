@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,9 +38,10 @@ import by.arvisit.modsenlibapp.bookservice.service.BookService;
 import by.arvisit.modsenlibapp.bookservice.service.GenreService;
 import by.arvisit.modsenlibapp.bookservice.util.BookTestData;
 import by.arvisit.modsenlibapp.exceptionhandlingstarter.handler.GlobalExceptionHandlerAdvice;
+import by.arvisit.modsenlibapp.innerfilterstarter.filter.JwtFilter;
 import jakarta.persistence.EntityNotFoundException;
 
-@WebMvcTest(controllers = BookController.class)
+@WebMvcTest(controllers = BookController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 @Import(GlobalExceptionHandlerAdvice.class)
 class BookControllerTest {

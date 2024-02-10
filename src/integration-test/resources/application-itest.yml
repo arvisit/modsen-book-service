@@ -1,6 +1,8 @@
 spring:
   jpa:
     show-sql: true
+  liquibase:
+    contexts: itest
 
 logging:
   level:
