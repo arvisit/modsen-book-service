@@ -40,9 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         UserDto userDto = userClient.validate(header);
         UserDetails userDetails = new User(userDto.username(), "",
-                userDto.authorities().stream().map(SimpleGrantedAuthority::new).toList()); // TODO what behavior when
-                                                                                           // invalid token exception on
-                                                                                           // client???
+                userDto.authorities().stream().map(SimpleGrantedAuthority::new).toList());
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null,
