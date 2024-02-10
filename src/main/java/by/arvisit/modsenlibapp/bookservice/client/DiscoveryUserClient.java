@@ -6,10 +6,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import by.arvisit.modsenlibapp.bookservice.config.UserClientFeignConfiguration;
 import by.arvisit.modsenlibapp.bookservice.dto.UserDto;
 
 @Profile({ "docker"})
-@FeignClient(value = "modsen-security-service")
+@FeignClient(value = "modsen-security-service", configuration = UserClientFeignConfiguration.class)
 public interface DiscoveryUserClient extends UserClient {
 
     @Override
