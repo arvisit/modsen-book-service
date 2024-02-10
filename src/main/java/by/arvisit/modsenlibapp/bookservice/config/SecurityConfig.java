@@ -11,7 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import by.arvisit.modsenlibapp.bookservice.filter.JwtFilter;
+import by.arvisit.modsenlibapp.innerfilterstarter.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

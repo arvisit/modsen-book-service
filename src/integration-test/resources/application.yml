@@ -23,3 +23,6 @@ logging:
 exception:
   handling:
     include: true
+security:
+  inner-filter:
+    include: true

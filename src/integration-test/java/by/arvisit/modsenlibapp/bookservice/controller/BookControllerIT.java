@@ -36,8 +36,8 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import by.arvisit.modsenlibapp.bookservice.PostgreSQLTestContainerExtension;
 import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
-import by.arvisit.modsenlibapp.bookservice.dto.UserDto;
 import by.arvisit.modsenlibapp.bookservice.util.BookITData;
+import by.arvisit.modsenlibapp.innerfilterstarter.dto.UserDto;
 
 @ActiveProfiles("itest")
 @ExtendWith(PostgreSQLTestContainerExtension.class)
