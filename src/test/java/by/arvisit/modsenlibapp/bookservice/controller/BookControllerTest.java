@@ -38,10 +38,10 @@ import by.arvisit.modsenlibapp.bookservice.service.BookService;
 import by.arvisit.modsenlibapp.bookservice.service.GenreService;
 import by.arvisit.modsenlibapp.bookservice.util.BookTestData;
 import by.arvisit.modsenlibapp.exceptionhandlingstarter.handler.GlobalExceptionHandlerAdvice;
-import by.arvisit.modsenlibapp.innerfilterstarter.filter.JwtFilter;
+import by.arvisit.modsenlibapp.innerfilterstarter.filter.JwtInnerFilter;
 import jakarta.persistence.EntityNotFoundException;
 
-@WebMvcTest(controllers = BookController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtFilter.class))
+@WebMvcTest(controllers = BookController.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtInnerFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 @Import(GlobalExceptionHandlerAdvice.class)
 class BookControllerTest {
