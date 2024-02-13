@@ -160,7 +160,7 @@ class BookControllerIT {
         BookRequestDto requestBody = BookITData.getRequestToSaveHeadFirstJava().build();
 
         UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
-        wireMockResponse(user);
+        wireMockResponseFromSecurityService(user);
 
         LibraryBookDto libraryBook = new LibraryBookDto(BOOK_SPRING_MICROSERVICES_ID);
         wireMockResponseFromLibraryService(libraryBook);
@@ -184,7 +184,7 @@ class BookControllerIT {
         BookRequestDto requestBody = BookITData.getRequestToSaveHeadFirstJava().build();
 
         UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
-        wireMockResponse(user);
+        wireMockResponseFromSecurityService(user);
 
         LibraryBookDto libraryBook = new LibraryBookDto(BOOK_SPRING_MICROSERVICES_ID);
         wireMockResponseFromLibraryService(libraryBook);
@@ -215,7 +215,7 @@ class BookControllerIT {
         BookRequestDto requestBody = BookITData.getRequestToUpdateSpringMicroservices().build();
 
         UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
-        wireMockResponse(user);
+        wireMockResponseFromSecurityService(user);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(JWT_TOKEN);
@@ -237,7 +237,7 @@ class BookControllerIT {
         BookRequestDto requestBody = BookITData.getRequestToUpdateSpringMicroservices().build();
 
         UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
-        wireMockResponse(user);
+        wireMockResponseFromSecurityService(user);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(JWT_TOKEN);
@@ -264,7 +264,7 @@ class BookControllerIT {
     @Test
     void shouldReturn204_when_invokeDelete() throws Exception {
         UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
-        wireMockResponse(user);
+        wireMockResponseFromSecurityService(user);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(JWT_TOKEN);
@@ -283,7 +283,7 @@ class BookControllerIT {
     @Test
     void shouldReturnAllBooksMinusOne_when_invokeDeleteAndThenInvokeGetBooks() throws Exception {
         UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
-        wireMockResponse(user);
+        wireMockResponseFromSecurityService(user);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(JWT_TOKEN);
@@ -313,7 +313,7 @@ class BookControllerIT {
                 .isEqualTo(expected);
     }
 
-    private void wireMockResponse(UserDto user) throws JsonProcessingException {
+    private void wireMockResponseFromSecurityService(UserDto user) throws JsonProcessingException {
         String body = objectMapper.writeValueAsString(user);
         WireMock.stubFor(WireMock.get(WireMock.urlEqualTo(USERS_VALIDATE_URL))
                 .willReturn(WireMock.aResponse()
