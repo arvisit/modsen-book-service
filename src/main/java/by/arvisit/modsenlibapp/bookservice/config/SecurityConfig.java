@@ -11,7 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import by.arvisit.modsenlibapp.innerfilterstarter.filter.JwtFilter;
+import by.arvisit.modsenlibapp.innerfilterstarter.filter.JwtInnerFilter;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
+    private final JwtInnerFilter jwtFilter;
     private final AccessDeniedHandler accessDeniedHandler;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 

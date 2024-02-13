@@ -8,6 +8,7 @@ import org.mapstruct.MappingTarget;
 
 import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
+import by.arvisit.modsenlibapp.bookservice.dto.LibraryBookDto;
 import by.arvisit.modsenlibapp.bookservice.persistence.model.Book;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
@@ -22,4 +23,6 @@ public interface BookMapper {
 
     @Mapping(target = "id", ignore = true)
     void updateEntityWithDto(BookRequestDto dto, @MappingTarget Book entity);
+
+    LibraryBookDto fromEntityToLibraryDto(Book entity);
 }

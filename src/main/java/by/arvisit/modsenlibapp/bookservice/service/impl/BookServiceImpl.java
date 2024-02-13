@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import by.arvisit.modsenlibapp.bookservice.client.LibraryClient;
 import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
 import by.arvisit.modsenlibapp.bookservice.mapper.BookMapper;
@@ -24,6 +25,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final LibraryClient libraryClient;
 
     @Transactional(readOnly = true)
     @Override
@@ -60,6 +62,7 @@ public class BookServiceImpl implements BookService {
         log.debug("Call for BookService.save() with dto {}", dto);
         Book savedEntity = bookRepository.save(
                 bookMapper.fromDtoToEntity(dto));
+        libraryClient.addNewBook(bookMapper.fromEntityToLibraryDto(savedEntity));
         return bookMapper.fromEntityToDto(savedEntity);
     }
 
