@@ -1,8 +1,11 @@
 package by.arvisit.modsenlibapp.bookservice.util;
 
+import java.util.List;
+
 import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
 import by.arvisit.modsenlibapp.bookservice.dto.GenreDto;
+import by.arvisit.modsenlibapp.innerfilterstarter.dto.UserDto;
 
 public final class BookITData {
 
@@ -13,6 +16,8 @@ public final class BookITData {
     public static final String URL_BOOKS_ENDPOINT = "/api/v1/books";
     public static final String URL_BOOK_BY_ID_TEMPLATE = "/api/v1/books/{id}";
     public static final String URL_BOOK_BY_ISBN_TEMPLATE = "/api/v1/books/by-isbn/{isbn}";
+
+    public static final String USERNAME = "admin";
 
     private BookITData() {
     }
@@ -79,6 +84,10 @@ public final class BookITData {
         return GenreDto.builder()
                 .withId(1L)
                 .withName("Computer Science");
+    }
+
+    public static UserDto getAdmin() {
+        return new UserDto(USERNAME, List.of("ROLE_ADMIN"));
     }
 
 }

@@ -4,6 +4,7 @@ import static by.arvisit.modsenlibapp.bookservice.util.BookITData.BOOK_SPRING_MI
 import static by.arvisit.modsenlibapp.bookservice.util.BookITData.BOOK_SPRING_MICROSERVICES_ISBN;
 import static by.arvisit.modsenlibapp.bookservice.util.BookITData.URL_BOOKS_ENDPOINT;
 import static by.arvisit.modsenlibapp.bookservice.util.BookITData.URL_BOOK_BY_ID_TEMPLATE;
+import static by.arvisit.modsenlibapp.bookservice.util.BookITData.getAdmin;
 import static by.arvisit.modsenlibapp.bookservice.util.BookITData.getResponseForJavaPersistence;
 import static by.arvisit.modsenlibapp.bookservice.util.BookITData.getResponseForLinuxCommandLine;
 import static by.arvisit.modsenlibapp.bookservice.util.BookITData.getResponseForSpringMicroservices;
@@ -159,7 +160,7 @@ class BookControllerIT {
     void shouldReturn201AndJsonContentType_when_invokeSave() throws Exception {
         BookRequestDto requestBody = BookITData.getRequestToSaveHeadFirstJava().build();
 
-        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        UserDto user = getAdmin();
         wireMockResponseFromSecurityService(user);
 
         LibraryBookDto libraryBook = new LibraryBookDto(BOOK_SPRING_MICROSERVICES_ID);
@@ -183,7 +184,7 @@ class BookControllerIT {
     void shouldReturnExpectedResponse_when_invokeSave() throws Exception {
         BookRequestDto requestBody = BookITData.getRequestToSaveHeadFirstJava().build();
 
-        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        UserDto user = getAdmin();
         wireMockResponseFromSecurityService(user);
 
         LibraryBookDto libraryBook = new LibraryBookDto(BOOK_SPRING_MICROSERVICES_ID);
@@ -214,7 +215,7 @@ class BookControllerIT {
     void shouldReturn200AndJsonContentType_when_invokeUpdate() throws Exception {
         BookRequestDto requestBody = BookITData.getRequestToUpdateSpringMicroservices().build();
 
-        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        UserDto user = getAdmin();
         wireMockResponseFromSecurityService(user);
 
         HttpHeaders headers = new HttpHeaders();
@@ -236,7 +237,7 @@ class BookControllerIT {
     void shouldReturnExpectedResponse_when_invokeUpdate() throws Exception {
         BookRequestDto requestBody = BookITData.getRequestToUpdateSpringMicroservices().build();
 
-        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        UserDto user = getAdmin();
         wireMockResponseFromSecurityService(user);
 
         HttpHeaders headers = new HttpHeaders();
@@ -263,7 +264,7 @@ class BookControllerIT {
 
     @Test
     void shouldReturn204_when_invokeDelete() throws Exception {
-        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        UserDto user = getAdmin();
         wireMockResponseFromSecurityService(user);
 
         HttpHeaders headers = new HttpHeaders();
@@ -282,7 +283,7 @@ class BookControllerIT {
 
     @Test
     void shouldReturnAllBooksMinusOne_when_invokeDeleteAndThenInvokeGetBooks() throws Exception {
-        UserDto user = new UserDto("admin", List.of("ROLE_ADMIN"));
+        UserDto user = getAdmin();
         wireMockResponseFromSecurityService(user);
 
         HttpHeaders headers = new HttpHeaders();
