@@ -55,8 +55,8 @@ public interface BookOpenApi {
             example = "d4cee2e6-cb52-4a17-ae47-f4ad85dd8b86") @PathVariable @UUID String id);
 
     @Operation(
-            summary = "Book info obtainment by id",
-            description = "Obtains book info by id",
+            summary = "Book info obtainment by ISBN",
+            description = "Obtains book info by ISBN",
             responses = {
                     @ApiResponse(
                             responseCode = "200", description = OK,
@@ -88,7 +88,7 @@ public interface BookOpenApi {
 
     @Operation(
             summary = "Adding a new book",
-            description = "Addin a new book to the catalog. Admin role is required",
+            description = "Adding a new book to the catalog. Admin role is required",
             responses = {
                     @ApiResponse(
                             responseCode = "201", description = CREATED,
