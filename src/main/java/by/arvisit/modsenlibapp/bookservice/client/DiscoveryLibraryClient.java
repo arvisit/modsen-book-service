@@ -13,6 +13,6 @@ import by.arvisit.modsenlibapp.innerfilterstarter.client.InnerCommunicationFeign
 public interface DiscoveryLibraryClient extends LibraryClient {
 
     @Override
-    @PostMapping("/api/v1/books")
+    @PostMapping("/api/v1/library/books")
     LibraryBookDto addNewBook(@RequestBody LibraryBookDto newBook);
 }
