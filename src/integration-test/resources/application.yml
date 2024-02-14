@@ -16,7 +16,7 @@ spring:
     modsen-security-service:
       uri: http://localhost:8480/api/v1/users
     modsen-library-service:
-      uri: http://localhost:8480/api/v1/books
+      uri: http://localhost:8480/api/v1/library/books
 
 logging:
   level:

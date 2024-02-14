@@ -25,6 +25,7 @@
         <wiremock.version>3.3.1</wiremock.version>
         <jetty.version>11.0.18</jetty.version>
         <jetty-bom.version>12.0.3</jetty-bom.version>
+        <springdoc.version>2.3.0</springdoc.version>
     </properties>
 
     <repositories>
@@ -119,6 +120,11 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
         </dependency>
 
         <dependency>

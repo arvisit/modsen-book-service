@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import by.arvisit.modsenlibapp.bookservice.controller.openapi.BookOpenApi;
 import by.arvisit.modsenlibapp.bookservice.dto.BookRequestDto;
 import by.arvisit.modsenlibapp.bookservice.dto.BookResponseDto;
 import by.arvisit.modsenlibapp.bookservice.service.BookService;
@@ -29,10 +30,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-public class BookController {
+public class BookController implements BookOpenApi {
 
     private final BookService bookService;
 
+    @Override
     @GetMapping("/{id}")
     public BookResponseDto getBookById(@PathVariable @UUID String id) {
         BookResponseDto response = bookService.getBookById(id);
@@ -40,6 +42,7 @@ public class BookController {
         return response;
     }
 
+    @Override
     @GetMapping("/by-isbn/{isbn}")
     public BookResponseDto getBookByIsbn(@PathVariable @Isbn String isbn) {
         BookResponseDto response = bookService.getBookByIsbn(isbn);
@@ -47,6 +50,7 @@ public class BookController {
         return response;
     }
 
+    @Override
     @GetMapping
     public List<BookResponseDto> getBooks() {
         List<BookResponseDto> response = bookService.getBooks();
@@ -54,6 +58,7 @@ public class BookController {
         return response;
     }
 
+    @Override
     @PostMapping
     @RolesAllowed("ADMIN")
     public ResponseEntity<BookResponseDto> save(@RequestBody @Valid BookRequestDto request) {
@@ -62,6 +67,7 @@ public class BookController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @Override
     @PutMapping("/{id}")
     @RolesAllowed("ADMIN")
     public BookResponseDto update(@PathVariable @UUID String id, @RequestBody @Valid BookRequestDto bookToUpdate) {
@@ -70,6 +76,7 @@ public class BookController {
         return response;
     }
 
+    @Override
     @DeleteMapping("/{id}")
     @RolesAllowed("ADMIN")
     public ResponseEntity<Void> delete(@PathVariable @UUID String id) {

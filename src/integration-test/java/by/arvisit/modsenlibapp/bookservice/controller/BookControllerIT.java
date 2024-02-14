@@ -51,7 +51,7 @@ import by.arvisit.modsenlibapp.innerfilterstarter.dto.UserDto;
 class BookControllerIT {
 
     private static final String USERS_VALIDATE_URL = "/api/v1/users/validate";
-    private static final String ADD_NEW_BOOK_URL = "/api/v1/books";
+    private static final String ADD_NEW_BOOK_URL = "/api/v1/library/books";
     private static final String JWT_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
     private static final int EXPECTED_BOOK_COUNT_DEFAULT = 3;
     private static final int EXPECTED_BOOKS_COUNT_AFTER_DELETE = 2;
