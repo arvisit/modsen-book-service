@@ -34,7 +34,7 @@ public interface BookOpenApi {
     String NO_CONTENT = "NO CONTENT";
 
     @Operation(
-            summary = "Book info obtainment by id",
+            summary = "Get book info by id",
             description = "Obtains book info by id",
             responses = {
                     @ApiResponse(
@@ -55,7 +55,7 @@ public interface BookOpenApi {
             example = "d4cee2e6-cb52-4a17-ae47-f4ad85dd8b86") @PathVariable @UUID String id);
 
     @Operation(
-            summary = "Book info obtainment by ISBN",
+            summary = "Get book info by ISBN",
             description = "Obtains book info by ISBN",
             responses = {
                     @ApiResponse(
@@ -76,7 +76,7 @@ public interface BookOpenApi {
             example = "978-0-306-40615-7") @PathVariable @Isbn String isbn);
 
     @Operation(
-            summary = "All books info obtainment",
+            summary = "Get book info for all books",
             description = "Obtains info about all books in the catalog",
             responses = {
                     @ApiResponse(
@@ -87,7 +87,7 @@ public interface BookOpenApi {
     List<BookResponseDto> getBooks();
 
     @Operation(
-            summary = "Adding a new book",
+            summary = "Add a new book",
             description = "Adding a new book to the catalog. Admin role is required",
             responses = {
                     @ApiResponse(
@@ -113,7 +113,7 @@ public interface BookOpenApi {
                             implementation = BookRequestDto.class))) @RequestBody @Valid BookRequestDto request);
 
     @Operation(
-            summary = "Updating an existing book",
+            summary = "Update an existing book",
             description = "Updating an existing book info. Admin role is required",
             responses = {
                     @ApiResponse(
@@ -146,7 +146,7 @@ public interface BookOpenApi {
                                     implementation = BookRequestDto.class))) @RequestBody @Valid BookRequestDto bookToUpdate);
 
     @Operation(
-            summary = "Deleting of an existing book",
+            summary = "Delete an existing book",
             description = "Deleting of an existing book info. Admin role is required",
             responses = {
                     @ApiResponse(
